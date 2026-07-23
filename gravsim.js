@@ -28,7 +28,7 @@ let gravity = 0;
 let pixelsPerMeter = 1;
 let lastTimestamp = 0;
 let animationId = null;
-let objectRadius = 30;
+let objectHalfSize = 60; 
 let groundHeight = 40;
 
 btnRun.addEventListener('click', runSimulation);
@@ -54,7 +54,14 @@ function resetSimulation() {
     gravity = parseFloat(inputGravity.value) || 0;
     acceleration = -gravity;
     
-    const availableHeight = canvasArea.clientHeight - groundHeight - (objectRadius * 2) - 40;
+    // Scale visual components dynamically based on altitude (100m = base 1.0 scale)
+    const visualScale = height > 0 ? Math.max(0.1, Math.min(4, 100 / height)) : 1;
+    document.documentElement.style.setProperty('--scale-factor', visualScale);
+    
+    groundHeight = Math.max(8, 40 * visualScale);
+    document.querySelector('.ground-plane').style.height = groundHeight + 'px';
+    
+    const availableHeight = canvasArea.clientHeight - groundHeight - (objectHalfSize * 2 * visualScale) - 40;
     pixelsPerMeter = height > 0 ? availableHeight / height : 1;
     
     updateStats();
