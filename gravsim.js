@@ -6,6 +6,7 @@ const statAcceleration = document.getElementById('stat-acceleration');
 const statPe = document.getElementById('stat-pe');
 const statKe = document.getElementById('stat-ke');
 
+const inputDrag = document.getElementById('input-drag');
 const inputAltitude = document.getElementById('input-altitude');
 const inputMass = document.getElementById('input-mass');
 const inputGravity = document.getElementById('input-gravity');
@@ -21,6 +22,7 @@ let isRunning = false;
 let time = 0;
 let height = 0;
 let velocity = 0;
+let acceleration = 0;
 let mass = 0;
 let gravity = 0;
 let pixelsPerMeter = 1;
@@ -34,6 +36,10 @@ btnPause.addEventListener('click', pauseSimulation);
 btnReset.addEventListener('click', resetSimulation);
 window.addEventListener('resize', render);
 
+inputDrag.addEventListener('change', (e) => {
+    inputMass.disabled = !e.target.checked;
+    resetSimulation();
+});
 inputAltitude.addEventListener('input', resetSimulation);
 inputMass.addEventListener('input', resetSimulation);
 inputGravity.addEventListener('input', resetSimulation);
@@ -46,6 +52,7 @@ function resetSimulation() {
     height = parseFloat(inputAltitude.value) || 0;
     mass = parseFloat(inputMass.value) || 0;
     gravity = parseFloat(inputGravity.value) || 0;
+    acceleration = -gravity;
     
     const availableHeight = canvasArea.clientHeight - groundHeight - (objectRadius * 2) - 40;
     pixelsPerMeter = height > 0 ? availableHeight / height : 1;
@@ -79,12 +86,26 @@ function loop(timestamp) {
     lastTimestamp = timestamp;
     
     time += dt;
-    velocity -= gravity * dt;
+    acceleration = -gravity;
+
+    if (inputDrag.checked && mass > 0) {
+        const dragConstant = 0.2; 
+        const dragForce = dragConstant * velocity * velocity;
+        const dragAcceleration = dragForce / mass;
+        acceleration += dragAcceleration;
+        
+        if (acceleration > 0 && velocity < 0) {
+            acceleration = 0;
+        }
+    }
+    
+    velocity += acceleration * dt;
     height += velocity * dt;
     
     if (height <= 0) {
         height = 0;
         velocity = 0;
+        acceleration = 0;
         isRunning = false;
     }
     
@@ -100,10 +121,11 @@ function updateStats() {
     statTime.textContent = time.toFixed(2) + ' s';
     statHeight.textContent = height.toFixed(2) + ' m';
     statVelocity.textContent = velocity.toFixed(2) + ' m/s';
-    statAcceleration.textContent = (height > 0 ? -gravity : 0).toFixed(2) + ' m/s²';
+    statAcceleration.textContent = (height > 0 ? acceleration : 0).toFixed(2) + ' m/s²';
     
-    const pe = mass * gravity * height;
-    const ke = 0.5 * mass * velocity * velocity;
+    const activeMass = inputDrag.checked ? mass : (mass || 10);
+    const pe = activeMass * gravity * height;
+    const ke = 0.5 * activeMass * velocity * velocity;
     
     statPe.textContent = pe.toFixed(2) + ' J';
     statKe.textContent = ke.toFixed(2) + ' J';
@@ -114,4 +136,5 @@ function render() {
     simObject.style.bottom = bottomPosition + 'px';
 }
 
-resetSimulation();  
+inputMass.disabled = !inputDrag.checked;
+resetSimulation();
