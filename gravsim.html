@@ -1,0 +1,70 @@
+<!-- gravsim.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HexaSimulators – Gravitation</title>
+    <link rel="stylesheet" href="gravsim.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar left-sidebar">
+            <h2>Statistics</h2>
+            <div class="stat-group">
+                <span class="stat-label">Time</span>
+                <span class="stat-value" id="stat-time">0.00 s</span>
+            </div>
+            <div class="stat-group">
+                <span class="stat-label">Height</span>
+                <span class="stat-value" id="stat-height">0.00 m</span>
+            </div>
+            <div class="stat-group">
+                <span class="stat-label">Velocity</span>
+                <span class="stat-value" id="stat-velocity">0.00 m/s</span>
+            </div>
+            <div class="stat-group">
+                <span class="stat-label">Acceleration</span>
+                <span class="stat-value" id="stat-acceleration">0.00 m/s²</span>
+            </div>
+            <div class="stat-group">
+                <span class="stat-label">Potential Energy</span>
+                <span class="stat-value" id="stat-pe">0.00 J</span>
+            </div>
+            <div class="stat-group">
+                <span class="stat-label">Kinetic Energy</span>
+                <span class="stat-value" id="stat-ke">0.00 J</span>
+            </div>
+        </aside>
+
+        <main class="sim-container">
+            <div class="canvas-area">
+                <div id="sim-object" class="sim-object"></div>
+                <div class="ground-plane"></div>
+            </div>
+        </main>
+
+        <aside class="sidebar right-sidebar">
+            <h2>Controls</h2>
+            <div class="input-group">
+                <label for="input-altitude">Altitude (m)</label>
+                <input type="number" id="input-altitude" value="100" step="1">
+            </div>
+            <div class="input-group">
+                <label for="input-mass">Mass (kg)</label>
+                <input type="number" id="input-mass" value="10" step="0.1">
+            </div>
+            <div class="input-group">
+                <label for="input-gravity">Gravity (m/s²)</label>
+                <input type="number" id="input-gravity" value="9.81" step="0.01">
+            </div>
+            <div class="button-group">
+                <button id="btn-run" class="btn primary">Run</button>
+                <button id="btn-pause" class="btn secondary">Pause</button>
+                <button id="btn-reset" class="btn outline">Reset</button>
+            </div>
+        </aside>
+    </div>
+    <script src="gravsim.js"></script>
+</body>
+</html>
