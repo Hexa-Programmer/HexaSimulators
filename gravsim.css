@@ -23,7 +23,7 @@ body, html {
     font-family: var(--font-family);
     background-color: var(--color-bg-canvas);
     color: var(--color-text-main);
-    overflow: hidden;
+    overflow: hidden; /* Changed for mobile below */
 }
 
 .app-container {
@@ -39,6 +39,7 @@ body, html {
     flex-direction: column;
     padding: 24px;
     z-index: 10;
+    flex-shrink: 0;
 }
 
 h2 {
@@ -119,13 +120,15 @@ h2 {
     margin-bottom: 20px;
 }
 
-.input-group label {
+.input-group label,
+.input-group .toggle-label {
     font-size: 0.85rem;
     color: var(--color-text-muted);
     margin-bottom: 8px;
 }
 
-.input-group input[type="number"] {
+.input-group input[type="number"],
+.input-group select {
     background-color: transparent;
     border: 1px solid var(--color-border);
     border-radius: 4px;
@@ -136,7 +139,8 @@ h2 {
     transition: border-color 0.2s, opacity 0.2s;
 }
 
-.input-group input[type="number"]:focus {
+.input-group input[type="number"]:focus,
+.input-group select:focus {
     outline: none;
     border-color: var(--color-accent);
 }
@@ -147,21 +151,67 @@ h2 {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-.checkbox-group {
+.input-group select option {
+    background-color: var(--color-bg-sidebar);
+    color: var(--color-text-main);
+}
+
+/* Toggle Switch Styles */
+.toggle-group {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 }
 
-.checkbox-group label {
+.toggle-group .toggle-label {
     margin-bottom: 0;
 }
 
-.checkbox-group input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    margin-bottom: 0 !important;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch .slider {
+    position: absolute;
     cursor: pointer;
-    accent-color: var(--color-accent);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-border);
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.toggle-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--color-text-main);
+    transition: .3s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .slider {
+    background-color: var(--color-accent);
+}
+
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(20px);
+    background-color: var(--color-bg-sidebar);
 }
 
 .button-group {
@@ -213,4 +263,37 @@ h2 {
 .btn.outline:hover {
     border-color: var(--color-text-muted);
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 850px) {
+    body, html {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .sim-container {
+        order: 1;
+        height: 50vh;
+        min-height: 350px;
+        flex-grow: 0;
+    }
+
+    .right-sidebar {
+        order: 2;
+        width: 100%;
+        border-top: 2px solid var(--color-border);
+    }
+
+    .left-sidebar {
+        order: 3;
+        width: 100%;
+        border-top: 2px solid var(--color-border);
+    }
 }

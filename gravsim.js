@@ -9,6 +9,7 @@ const statKe = document.getElementById('stat-ke');
 const inputDrag = document.getElementById('input-drag');
 const inputAltitude = document.getElementById('input-altitude');
 const inputMass = document.getElementById('input-mass');
+const inputPreset = document.getElementById('input-preset');
 const inputGravity = document.getElementById('input-gravity');
 
 const btnRun = document.getElementById('btn-run');
@@ -34,7 +35,8 @@ let groundHeight = 40;
 btnRun.addEventListener('click', runSimulation);
 btnPause.addEventListener('click', pauseSimulation);
 btnReset.addEventListener('click', resetSimulation);
-window.addEventListener('resize', render);
+// Adjusted to call resetSimulation on resize so the pixelsPerMeter recalculates correctly for mobile heights
+window.addEventListener('resize', resetSimulation);
 
 inputDrag.addEventListener('change', (e) => {
     inputMass.disabled = !e.target.checked;
@@ -42,7 +44,18 @@ inputDrag.addEventListener('change', (e) => {
 });
 inputAltitude.addEventListener('input', resetSimulation);
 inputMass.addEventListener('input', resetSimulation);
-inputGravity.addEventListener('input', resetSimulation);
+
+inputPreset.addEventListener('change', (e) => {
+    if (e.target.value !== 'custom') {
+        inputGravity.value = e.target.value;
+    }
+    resetSimulation();
+});
+
+inputGravity.addEventListener('input', () => {
+    inputPreset.value = 'custom';
+    resetSimulation();
+});
 
 function resetSimulation() {
     cancelAnimationFrame(animationId);
